@@ -5,7 +5,7 @@ Have you ever wanted to create anime or honey or anything else in [Infinity Craf
 ## Installation
 
 ```bash
-pip3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ## Usage
