@@ -5,6 +5,7 @@ Have you ever wanted to create anime or honey or anything else in [Infinity Craf
 ## Installation
 
 ```bash
+$ git clone https://github.com/admin-else/infinity-scrape
 $ pip3 install -r requirements.txt
 ```
 
