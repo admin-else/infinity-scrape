@@ -8,8 +8,8 @@ import random
 import os
 from settings import *
 
-if not os.path.exists("infinity-craft.db"):
-    print("""There is no infinity-craft.db file!
+if not os.path.exists("infinite-craft.db"):
+    print("""There is no infinite-craft.db file!
 make SURE you are in the right directory (to change your directory use cd).""")
     if not input("Are you sure you want to start a new database there is one on the github page [Y/n]").lower().startswith("y"):
         exit(1)
