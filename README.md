@@ -4,9 +4,53 @@ Have you ever wanted to create anime or honey or anything else in [Infinity Craf
 
 ## Installation
 
+### Step 1: Install Python
+
+Before you can use the Infinity Scraper, you need to have Python installed on your system. Follow these steps to install Python:
+
+1. Open your web browser and navigate to the [Python download page](https://www.python.org/downloads/).
+2. Download the latest version of Python for Windows.
+3. Once the download is complete, run the installer.
+4. Follow the on-screen instructions to complete the installation process, ensuring that you select the option to add Python to your system PATH.
+
+### Step 2: Install Git
+
+Before you can clone the repository, you need to have Git installed on your system. Git is a version control system that allows you to manage and track changes to files. Follow these steps to install Git:
+
+1. Open your web browser and navigate to the [Git download page](https://git-scm.com/downloads).
+2. Download the latest version of Git for Windows.
+3. Once the download is complete, run the installer.
+4. Follow the on-screen instructions to complete the installation process, ensuring that you select the appropriate options for your system.
+
+### Step 3: Clone the Repository
+
+Now that Python and Git are installed, you can clone the Infinity Scraper repository to your local machine. Follow these steps:
+
+1. Open the Command Prompt by pressing `Win + R`, typing `cmd`, and then pressing `Enter`.
+2. Navigate to the directory where you want to clone the repository using the `cd` command. For example:
+
+    ```bash
+    cd C:\Projects
+    ```
+
+3. Clone the repository by running the following command:
+
 ```bash
-$ git clone https://github.com/admin-else/infinity-scrape
-$ pip3 install -r requirements.txt
+git clone https://github.com/admin-else/infinity-scrape
+```
+
+4. Once the cloning process is complete, navigate into the cloned directory:
+
+```bash
+cd infinity-scrape
+```
+
+### Step 4: Install Python Dependencies
+
+Infinity Scraper relies on certain Python libraries to function (its just requests). You can install these dependencies using the following command:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -14,7 +58,7 @@ $ pip3 install -r requirements.txt
 Once you have installed everything, you can run:
 
 ```bash
-$ python3 howtoget.py
+python3 howtoget.py
 ```
 
 This command will provide you with a list of items you need to craft for your desired item. However, if you encounter a message like:
@@ -32,3 +76,4 @@ $ python3 scrape.py
 ```
 
 If you do that, it would be appreciated if you could make a pull request so that other people don't have to go through the same process.
+If you have more problems you can contact me on discord @admin_else.
