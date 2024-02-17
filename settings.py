@@ -1,1 +1,1 @@
-API_DELAY = 0.5 # if you set this too low you will be ratelimited by cloudflare
+API_DELAY = 0.2 # if you set this too low you will be ratelimited by cloudflare
