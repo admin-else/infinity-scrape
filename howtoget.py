@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 import sqlite3
 import random
+import os
+
+if not os.path.exists("infinite-craft.db"):
+    print("""There is no infinite-craft.db file its reqired to search for recipies!
+make SURE you are in the right directory (to change your directory use cd).""")
+    exit(1)
 
 conn = sqlite3.connect('infinite-craft.db')
 c = conn.cursor()
