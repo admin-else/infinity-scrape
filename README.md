@@ -2,6 +2,8 @@
 
 Have you ever wanted to create anime or honey or anything else in [Infinity Craft](https://neal.fun/infinite-craft/), but didn't know how? With this repository, now you can...
 
+Also there is already something like this as a [discord bot](https://discord.gg/3H2YBfxVxx).
+
 ## Installation
 
 ### Step 1: Install Python
