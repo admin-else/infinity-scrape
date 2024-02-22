@@ -21,7 +21,7 @@ while True:
     target = random.choice(list(targets)) # ummm this is kinda stupid but it works ig...
     if target in base:
         continue
-    c.execute("SELECT ingr1, ingr2 FROM combination WHERE out = ?", [target])
+    c.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
     ingr = c.fetchone()
     if ingr == None:
         print(f"didn't find source of {target}...")
