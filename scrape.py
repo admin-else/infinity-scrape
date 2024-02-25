@@ -88,7 +88,7 @@ def main():
     except KeyboardInterrupt:
         print("Exiting")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"{type(e)}: {e}")
     finally:
         conn.close()
 
