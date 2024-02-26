@@ -77,5 +77,5 @@ It means the source for your desired item is not found. In such a case, you need
 $ python3 scrape.py
 ```
 
-If you do that, it would be appreciated if you could make a pull request so that other people don't have to go through the same process.
+If you do that, it would be appreciated if you could make a pull request so that other people don't have to repopulate the database if you alread did it.
 If you have more problems you can contact me on discord @admin_else.
