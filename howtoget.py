@@ -18,12 +18,10 @@ targets = set([input("Enter your desired element: ").title()]) # title will make
 steps = {}
 
 while not targets.issubset(base):
-    print(f"targets: {targets}")
     target = list(targets)[0] # Fixed this and removed the random() function so the code is more efficient
     while target in base:
         targets.remove(target)
         target = list(targets)[0]
-    print(f"getting source of {target}...")
     cursor.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
     ingr = cursor.fetchone()
     if ingr == None:
