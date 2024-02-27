@@ -17,9 +17,7 @@ base = set(["Water", "Fire", "Wind", "Earth"])
 targets = set([input("Enter your desired element: ").title()]) # title will make stuff that uses wrong case right like anime -> Anime
 steps = {}
 
-while True:
-    if targets.issubset(base):
-        break
+while not targets.issubset(base):
     print(f"targets: {targets}")
     target = list(targets)[0] # Fixed this and removed the random() function so the code is more efficient
     while target in base:
