@@ -4,27 +4,28 @@ import random
 import os
 
 if not os.path.exists("infinite-craft.db"):
-    print("""There is no infinite-craft.db file its reqired to search for recipies!
-make SURE you are in the right directory (to change your directory use cd).""")
+    print("""There is no infinite-craft.db file!
+Make SURE you are in the right directory. To change your directory, use the following command :
+cd path/to/infinite-craft.db
+(Right click on infinite-craft.db to copy file path)""")
     exit(1)
 
 conn = sqlite3.connect('infinite-craft.db')
-c = conn.cursor()
+cursor = conn.cursor()
 
 base = set(["Water", "Fire", "Wind", "Earth"])
-targets = set([input("what do you want: ").title()]) # title will make stuff that uses wrong case right like anime -> Anime
+targets = set([input("Enter your desired element: ").title()]) # title will make stuff that uses wrong case right like anime -> Anime
 steps = {}
 
-while True:
-    if targets.issubset(base):
-        break
-    target = random.choice(list(targets)) # ummm this is kinda stupid but it works ig...
-    if target in base:
-        continue
-    c.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
-    ingr = c.fetchone()
+while not targets.issubset(base):
+    target = list(targets)[0] # Fixed this and removed the random() function so the code is more efficient
+    while target in base:
+        targets.remove(target)
+        target = list(targets)[0]
+    cursor.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
+    ingr = cursor.fetchone()
     if ingr == None:
-        print(f"didn't find source of {target}...")
+        print(f"Cannot find recipie for {target}...")
         exit(1)
 
     steps[target] = (ingr[0], ingr[1])
@@ -32,7 +33,7 @@ while True:
     targets.add(ingr[1])
     targets.remove(target)
 
-c.close()
+cursor.close()
 
 sorted_steps = []
 made = base
