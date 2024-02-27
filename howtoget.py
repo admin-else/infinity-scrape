@@ -4,8 +4,10 @@ import random
 import os
 
 if not os.path.exists("infinite-craft.db"):
-    print("""There is no infinite-craft.db file its reqired to search for recipies!
-make SURE you are in the right directory (to change your directory use cd).""")
+    print("""There is no infinite-craft.db file!
+Make SURE you are in the right directory. To change your directory, use the following command :
+cd path/to/infinite-craft.db
+(Right click on infinite-craft.db to copy file path)""")
     exit(1)
 
 conn = sqlite3.connect('infinite-craft.db')
