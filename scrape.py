@@ -10,8 +10,10 @@ from settings import *
 
 if not os.path.exists("infinite-craft.db"):
     print("""There is no infinite-craft.db file!
-make SURE you are in the right directory (to change your directory use cd).""")
-    if not input("Are you sure you want to start a new database there is one on the github page [Y/n]").lower().startswith("y"):
+Make SURE you are in the right directory. To change your directory, use the following command :
+cd path/to/infinite-craft.db
+(Right click on infinite-craft.db to copy file path)""")
+    if not input("Are you sure you want to start a new database? You can use the one on the github page. [Y/n]").lower().startswith("y"):
         exit(1)
 
 conn = sqlite3.connect('infinite-craft.db')
@@ -46,12 +48,18 @@ def combine(elem):
     if response.status_code == 200:
         output = json.loads(response.text)
         return output
-    else:
-        print(f"API DIED WITH CODE {response.status_code}!!!! EXITING IMIDIATLY!!!!")
+    else if not response.ok:
+        print(f"API DIED WITH CODE {response.status_code}!!!! EXITING IMMEDIATELY!!!!")
         return None
+    else:
+        if not input(f"Warning! Response is code {response.status_code}, which is OK but unexpected. Continue anyways? (May break) [Y/N]").lower().startswith("y"):
+            exit(1)
+        output = json.loads(response.text)
+        return output
+        
 
 def main():
-    print("Starting, press CTRL+C to stop")
+    print("Starting, press CTRL+C or close this window to stop")
 
     api_gives_info = True
 
