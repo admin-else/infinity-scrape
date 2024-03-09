@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import requests
-import json
 import itertools
 import time
 import sqlite3
@@ -26,11 +25,10 @@ def combine(elem):
     time.sleep(API_DELAY)
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0',
+        'User-Agent': USER_AGENT,
         'Accept': '*/*',
         'Accept-Language': 'en-US,en;q=0.5',
         'Referer': 'https://neal.fun/infinite-craft/',
-        'DNT': '1',
         'Connection': 'keep-alive',
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
@@ -45,18 +43,11 @@ def combine(elem):
 
     response = requests.get('https://neal.fun/api/infinite-craft/pair', params=params, headers=headers)
 
-    if response.status_code == 200:
-        output = json.loads(response.text)
-        return output
-    else if not response.ok:
+    if response.ok:
+        return response.json()
+    else:
         print(f"API DIED WITH CODE {response.status_code}!!!! EXITING IMMEDIATELY!!!!")
         return None
-    else:
-        if not input(f"Warning! Response is code {response.status_code}, which is OK but unexpected. Continue anyways? (May break) [Y/N]").lower().startswith("y"):
-            exit(1)
-        output = json.loads(response.text)
-        return output
-        
 
 def main():
     print("Starting, press CTRL+C or close this window to stop")
