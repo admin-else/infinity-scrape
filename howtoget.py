@@ -4,27 +4,33 @@ import random
 import os
 
 if not os.path.exists("infinite-craft.db"):
-    print("""There is no infinite-craft.db file!
+    print(
+        """There is no infinite-craft.db file!
 Make SURE you are in the right directory. To change your directory, use the following command :
 cd path/to/infinite-craft.db
-(Right click on infinite-craft.db to copy file path)""")
+(Right click on infinite-craft.db to copy file path)"""
+    )
     exit(1)
 
-conn = sqlite3.connect('infinite-craft.db')
+conn = sqlite3.connect("infinite-craft.db")
 cursor = conn.cursor()
 
 base = set(["Water", "Fire", "Wind", "Earth"])
-targets = set([input("Enter your desired element: ").title()]) # title will make stuff that uses wrong case right like anime -> Anime
+# title will make stuff that uses wrong case right like anime -> Anime
+targets = set([input("Enter your desired element: ").title()])
 steps = {}
 
 while not targets.issubset(base):
-    target = list(targets)[0] # Fixed this and removed the random() function so the code is more efficient
+    # Fixed this and removed the random() function
+    #    so the code is more efficient
+    target = list(targets)[0]
     while target in base:
         targets.remove(target)
         target = list(targets)[0]
-    cursor.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
+    cursor.execute(
+        "SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
     ingr = cursor.fetchone()
-    if ingr == None:
+    if ingr is None:
         print(f"Cannot find recipie for {target}...")
         exit(1)
 
