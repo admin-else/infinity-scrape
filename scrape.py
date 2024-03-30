@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import sys
 import requests
 import itertools
 import time
@@ -124,12 +123,10 @@ def main():
                     end="",
                     flush=False,
                 )
-                # {' (FIRST EVER)' if fEverFlag else ''}
                 if result["isNew"]:
                     firstEvers += 1
                     print(" (FIRST EVER)", end="", flush=False)
-                    # fEverFlag = True
-                print()
+                print()  # newline clears the buffer/flushes to stdout all at once
 
     except KeyboardInterrupt:
         print("Exiting")
