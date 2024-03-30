@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import requests
 import itertools
 import time
@@ -30,6 +31,9 @@ c.execute(
     """CREATE TABLE IF NOT EXISTS combination
              (id INTEGER PRIMARY KEY, ingr1 TEXT, ingr2 TEXT, out TEXT UNIQUE)"""
 )
+
+newAdditions = 0
+firstEvers = 0
 
 
 def combine(elem, depth=10):
@@ -70,13 +74,14 @@ def combine(elem, depth=10):
         # wait an increasing amount of time to get out of rate limit and retry
         # first time retry imieadetly, because it might just be a network error
         # then keep increasing the retry timer
-        timeout = 120 * (10-depth)
+        timeout = 120 * (10 - depth)
         print(f"Response not OK, waiting {timeout}s and retrying.")
         time.sleep(timeout)
-        return combine(elem, depth-1)
+        return combine(elem, depth - 1)
 
 
 def main():
+    global newAdditions, firstEvers
     print("Connected!")
     api_gives_info = True
 
@@ -88,14 +93,12 @@ def main():
     try:
         print("Starting, press CTRL+C or close this window to stop")
         while api_gives_info:
-            combinations = list(
-                itertools.combinations_with_replacement(current, 2))
+            combinations = list(itertools.combinations_with_replacement(current, 2))
             random.shuffle(combinations)
             for combination in combinations:
                 c.execute(
                     "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
-                    (combination[0], combination[1],
-                     combination[1], combination[0]),
+                    (combination[0], combination[1], combination[1], combination[0]),
                 )
                 existing_combination = c.fetchone()
                 if existing_combination:
@@ -115,8 +118,19 @@ def main():
                     )
                     conn.commit()
                     current.append(result["result"])
+                    newAdditions += 1
+                print(
+                    f"{combination[0]} + {combination[1]} -> {result['result']}{' (NEW)' if c.rowcount > 0 else ''}",
+                    end="",
+                    flush=False,
+                )
+                # {' (FIRST EVER)' if fEverFlag else ''}
+                if result["isNew"]:
+                    firstEvers += 1
+                    print(" (FIRST EVER)", end="", flush=False)
+                    # fEverFlag = True
+                print()
 
-                print(f"{combination[0]} + {combination[1]} -> {result['result']}{' (NEW)' if c.rowcount > 0 else ''}{' (FIRST EVER)' if result['isNew'] else ''}")
     except KeyboardInterrupt:
         print("Exiting")
     except Exception as e:
@@ -127,3 +141,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+print(
+    f"Found {newAdditions} new combinations and {firstEvers} first ever combinations!"
+)
