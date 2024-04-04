@@ -27,8 +27,7 @@ while not targets.issubset(base):
     while target in base:
         targets.remove(target)
         target = list(targets)[0]
-    cursor.execute(
-        "SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
+    cursor.execute("SELECT ingr1, ingr2 FROM combination WHERE out LIKE ?", [target])
     ingr = cursor.fetchone()
     if ingr is None:
         print(f"Cannot find recipie for {target}...")
