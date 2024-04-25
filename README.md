@@ -6,6 +6,8 @@ Also there is already something like this as a [discord bot](https://discord.gg/
 
 ## Installation
 
+Also someone made a [tutorial for windows](https://www.youtube.com/watch?v=WRgj4NRL2hA). 
+
 ### Step 1: Install Python
 
 Before you can use the Infinity Scraper, you need to have Python installed on your system. Follow these steps to install Python:
