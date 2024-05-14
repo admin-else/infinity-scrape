@@ -1,4 +1,4 @@
-# Infinity Scraper
+# Infinity Scrape
 
 Have you ever wanted to create anime or honey or anything else in [Infinity Craft](https://neal.fun/infinite-craft/), but didn't know how? With this repository, now you can...
 
@@ -10,7 +10,7 @@ Also someone made a [tutorial for windows](https://www.youtube.com/watch?v=WRgj4
 
 ### Step 1: Install Python
 
-Before you can use the Infinity Scraper, you need to have Python installed on your system. Follow these steps to install Python:
+Before you can use the Infinity Scrape, you need to have Python installed on your system. Follow these steps to install Python:
 
 1. Open your web browser and navigate to the [Python download page](https://www.python.org/downloads/).
 2. Download the latest version of Python for Windows.
@@ -28,7 +28,7 @@ Before you can clone the repository, you need to have Git installed on your syst
 
 ### Step 3: Clone the Repository
 
-Now that Python and Git are installed, you can clone the Infinity Scraper repository to your local machine. Follow these steps:
+Now that Python and Git are installed, you can clone the Infinity Scrape repository to your local machine. Follow these steps:
 
 1. Open the Command Prompt by pressing `Win + R`, typing `cmd`, and then pressing `Enter`.
 2. Navigate to the directory where you want to clone the repository using the `cd` command. For example:
@@ -51,7 +51,7 @@ cd infinity-scrape
 
 ### Step 4: Install Python Dependencies
 
-Infinity Scraper relies on certain Python libraries to function (its just requests). You can install these dependencies using the following command:
+Infinity Scrape relies on certain Python libraries to function (its just requests). You can install these dependencies using the following command:
 
 ```bash
 pip install -r requirements.txt

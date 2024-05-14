@@ -31,9 +31,6 @@ c.execute(
              (id INTEGER PRIMARY KEY, ingr1 TEXT, ingr2 TEXT, out TEXT UNIQUE)"""
 )
 
-newAdditions = 0
-firstEvers = 0
-
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException,
                       max_time=60)
@@ -42,7 +39,7 @@ def save_request(combination):
     return response.json()
 
 def main():
-    global newAdditions, firstEvers
+    newAdditions, firstEvers = 0, 0
     print("Connected!")
     api_gives_info = True
 
@@ -54,28 +51,29 @@ def main():
     try:
         print("Starting, press CTRL+C or close this window to stop")
         while api_gives_info:
-            print("istart iter tooling")
+            print("Generating Combinations...")
             combinations = list(itertools.combinations_with_replacement(current, 2))
-            print("i end itertooling")
+            print("Shuffeling Combinations...")
             random.shuffle(combinations)
-            print("i end shuffel")
+            print("Done...")
             for combination in combinations:
-                c.execute(
-                    "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
-                    (combination[0], combination[1], combination[1], combination[0]),
-                )
-                existing_combination = c.fetchone()
-                if existing_combination:
-                    print(f"{combination[0]} + {combination[1]} -> skip...")
-                    continue
-                try:
-                    result = save_request(combination)
-                except:
-                    api_gives_info = False
+                if SIMPLE_COMBINES:
+                    if NON_SIMPLE_CHARS in combination[0] or NON_SIMPLE_CHARS in combination[1]:
+                        print(f"{combination[0]} + {combination[1]} -> skip... (not simple)")
+                        continue
                 
-                if result is None:
-                    api_gives_info = False
-                    break
+                if CHECK_IF_ALREADY_DONE:
+                    c.execute(
+                        "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
+                        (combination[0], combination[1], combination[1], combination[0]),
+                    )
+                    existing_combination = c.fetchone()
+                    if existing_combination:
+                        print(f"{combination[0]} + {combination[1]} -> skip... (already done)")
+                        continue
+                
+                result = save_request(combination)
+                
 
                 if result["result"] not in current:
                     c.execute(
@@ -101,11 +99,9 @@ def main():
         print(f"{type(e)}: {e}")
     finally:
         conn.close()
-
+        
+    print(f"Found {newAdditions} new combinations and {firstEvers} first ever combinations!")
 
 if __name__ == "__main__":
     main()
 
-print(
-    f"Found {newAdditions} new combinations and {firstEvers} first ever combinations!"
-)

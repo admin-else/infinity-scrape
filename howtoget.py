@@ -39,6 +39,7 @@ while not targets.issubset(base):
     targets.remove(target)
 
 cursor.close()
+conn.close()
 
 sorted_steps = []
 made = base
