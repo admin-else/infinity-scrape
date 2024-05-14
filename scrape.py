@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import requests
 import itertools
-import time
+import backoff
 import sqlite3
 import random
 import os
@@ -34,50 +34,12 @@ c.execute(
 newAdditions = 0
 firstEvers = 0
 
-
-def combine(elem, depth=10):
-    if depth < 0:
-        print("Too many retries, exiting...")
-        return None
-    time.sleep(API_DELAY)
-    try:
-        headers = {
-            "User-Agent": USER_AGENT,
-            "Accept": "*/*",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Referer": "https://neal.fun/infinite-craft/",
-            "Connection": "keep-alive",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-GPC": "1",
-        }
-
-        params = {
-            "first": elem[0],
-            "second": elem[1],
-        }
-
-        response = requests.get(
-            "https://neal.fun/api/infinite-craft/pair", params=params, headers=headers
-        )
-
-        if response.ok:
-            return response.json()
-        else:
-            raise Exception("Response not OK")
-    except KeyboardInterrupt:
-        print("Recieved ctrl-c, quitting")
-        return
-    except:
-        # wait an increasing amount of time to get out of rate limit and retry
-        # first time retry imieadetly, because it might just be a network error
-        # then keep increasing the retry timer
-        timeout = 120 * (10 - depth)
-        print(f"Response not OK, waiting {timeout}s and retrying.")
-        time.sleep(timeout)
-        return combine(elem, depth - 1)
-
+@backoff.on_exception(backoff.expo,
+                      requests.exceptions.RequestException,
+                      max_time=60)
+def save_request(combination):
+    response = requests.post('https://neal.fun/api/infinite-craft/pair', params={"first": combination[0], "second": combination[1]}, headers=HEADERS)
+    return response.json()
 
 def main():
     global newAdditions, firstEvers
@@ -92,8 +54,11 @@ def main():
     try:
         print("Starting, press CTRL+C or close this window to stop")
         while api_gives_info:
+            print("istart iter tooling")
             combinations = list(itertools.combinations_with_replacement(current, 2))
+            print("i end itertooling")
             random.shuffle(combinations)
+            print("i end shuffel")
             for combination in combinations:
                 c.execute(
                     "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
@@ -103,9 +68,11 @@ def main():
                 if existing_combination:
                     print(f"{combination[0]} + {combination[1]} -> skip...")
                     continue
-
-                result = combine(combination)
-
+                try:
+                    result = save_request(combination)
+                except:
+                    api_gives_info = False
+                
                 if result is None:
                     api_gives_info = False
                     break
