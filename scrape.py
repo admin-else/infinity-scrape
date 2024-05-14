@@ -4,6 +4,7 @@ import itertools
 import backoff
 import sqlite3
 import random
+import numpy
 import os
 from settings import *
 
@@ -31,6 +32,9 @@ c.execute(
              (id INTEGER PRIMARY KEY, ingr1 TEXT, ingr2 TEXT, out TEXT UNIQUE)"""
 )
 
+def are_chars_in_string(chars, string):
+    return bool([1 for c in chars if c in string])
+
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException,
                       max_time=60)
@@ -54,13 +58,15 @@ def main():
             print("Generating Combinations...")
             combinations = list(itertools.combinations_with_replacement(current, 2))
             print("Shuffeling Combinations...")
-            random.shuffle(combinations)
-            print("Done...")
+            numpy.random.shuffle(combinations)
+            text = "Done..."
             for combination in combinations:
                 if SIMPLE_COMBINES:
-                    if NON_SIMPLE_CHARS in combination[0] or NON_SIMPLE_CHARS in combination[1]:
-                        print(f"{combination[0]} + {combination[1]} -> skip... (not simple)")
+                    if are_chars_in_string(NON_SIMPLE_CHARS, combination[0]) or are_chars_in_string(NON_SIMPLE_CHARS, combination[1]):
                         continue
+                    
+                print(text)
+                text = f"{combination[0]} + {combination[1]} -> "
                 
                 if CHECK_IF_ALREADY_DONE:
                     c.execute(
@@ -69,11 +75,11 @@ def main():
                     )
                     existing_combination = c.fetchone()
                     if existing_combination:
-                        print(f"{combination[0]} + {combination[1]} -> skip... (already done)")
+                        text += "skip... (already done)"
                         continue
                 
                 result = save_request(combination)
-                
+                text += result["result"]
 
                 if result["result"] not in current:
                     c.execute(
@@ -81,17 +87,13 @@ def main():
                         (combination[0], combination[1], result["result"]),
                     )
                     conn.commit()
-                    current.append(result["result"])
                     newAdditions += 1
-                print(
-                    f"{combination[0]} + {combination[1]} -> {result['result']}{' (NEW)' if c.rowcount > 0 else ''}",
-                    end="",
-                    flush=False,
-                )
-                if result["isNew"]:
-                    firstEvers += 1
-                    print(" (FIRST EVER)", end="", flush=False)
-                print()  # newline clears the buffer/flushes to stdout all at once
+                    current.append(result["result"])
+                    if c.rowcount > 0:
+                        text += " (NEW)"
+                    if result["isNew"]:
+                        firstEvers += 1
+                        text += " (FIRST EVER)"
 
     except KeyboardInterrupt:
         print("Exiting")
