@@ -54,46 +54,41 @@ def main():
         current = ["Water", "Fire", "Wind", "Earth"]
     try:
         print("Starting, press CTRL+C or close this window to stop")
+        text = "Done..."
         while api_gives_info:
-            print("Generating Combinations...")
-            combinations = list(itertools.combinations_with_replacement(current, 2))
-            print("Shuffeling Combinations...")
-            numpy.random.shuffle(combinations)
-            text = "Done..."
-            for combination in combinations:
-                if SIMPLE_COMBINES:
-                    if are_chars_in_string(NON_SIMPLE_CHARS, combination[0]) or are_chars_in_string(NON_SIMPLE_CHARS, combination[1]):
-                        continue
-                    
-                print(text)
-                text = f"{combination[0]} + {combination[1]} -> "
+            combination = [random.choice(current), random.choice(current)]
+            if SIMPLE_COMBINES:
+                if are_chars_in_string(NON_SIMPLE_CHARS, combination[0]) or are_chars_in_string(NON_SIMPLE_CHARS, combination[1]):
+                    continue
                 
-                if CHECK_IF_ALREADY_DONE:
-                    c.execute(
-                        "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
-                        (combination[0], combination[1], combination[1], combination[0]),
-                    )
-                    existing_combination = c.fetchone()
-                    if existing_combination:
-                        text += "skip... (already done)"
-                        continue
-                
-                result = save_request(combination)
-                text += result["result"]
-
-                if result["result"] not in current:
-                    c.execute(
-                        "INSERT INTO combination (ingr1, ingr2, out) VALUES (?, ?, ?)",
-                        (combination[0], combination[1], result["result"]),
-                    )
-                    conn.commit()
-                    newAdditions += 1
-                    current.append(result["result"])
-                    if c.rowcount > 0:
-                        text += " (NEW)"
-                    if result["isNew"]:
-                        firstEvers += 1
-                        text += " (FIRST EVER)"
+            print(text)
+            text = f"{combination[0]} + {combination[1]} -> "
+            
+            if CHECK_IF_ALREADY_DONE:
+                c.execute(
+                    "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
+                    (combination[0], combination[1], combination[1], combination[0]),
+                )
+                existing_combination = c.fetchone()
+                if existing_combination:
+                    text += "skip... (already done)"
+                    continue
+            
+            result = save_request(combination)
+            text += result["result"]
+            if result["result"] not in current:
+                c.execute(
+                    "INSERT INTO combination (ingr1, ingr2, out) VALUES (?, ?, ?)",
+                    (combination[0], combination[1], result["result"]),
+                )
+                conn.commit()
+                newAdditions += 1
+                current.append(result["result"])
+                if c.rowcount > 0:
+                    text += " (NEW)"
+                if result["isNew"]:
+                    firstEvers += 1
+                    text += " (FIRST EVER)"
 
     except KeyboardInterrupt:
         print("Exiting")
