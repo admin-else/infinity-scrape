@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import requests
-import itertools
 import backoff
 import sqlite3
 import random
-import numpy
 import os
 from settings import *
 

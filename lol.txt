@@ -1,0 +1,20 @@
+1. Wind + Earth -> Dust
+2. Water + Water -> Lake
+3. Water + Earth -> Plant
+4. Fire + Wind -> Smoke
+5. Water + Fire -> Steam
+6. Lake + Plant -> Lily
+7. Water + Smoke -> Fog
+8. Earth + Plant -> Tree
+9. Dust + Lily -> Angel
+10. Fire + Steam -> Engine
+11. Dust + Fog -> Smog
+12. Water + Smog -> Acid Rain
+13. Acid Rain + Angel -> Devil
+14. Acid Rain + Devil -> Evil
+15. Earth + Engine -> Tractor
+16. Lake + Tractor -> Plow
+17. Lake + Plow -> Field
+18. Acid Rain + Field -> Fertilizer
+19. Fertilizer + Tree -> Fruit
+20. Evil + Fruit -> Apple
