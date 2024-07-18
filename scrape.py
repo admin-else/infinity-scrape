@@ -36,9 +36,13 @@ def are_chars_in_string(chars, string):
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException,
                       max_time=60)
-def save_request(combination):
-    response = requests.post('https://neal.fun/api/infinite-craft/pair', params={"first": combination[0], "second": combination[1]}, headers=HEADERS)
-    return response.json()
+def combine(combination):
+    try:
+        response = requests.post('https://neal.fun/api/infinite-craft/pair', params={"first": combination[0], "second": combination[1]}, headers=HEADERS).json()
+    except Exception as e:
+        print("got exeption:", e)
+        return
+    return response
 
 def main():
     newAdditions, firstEvers = 0, 0
@@ -72,7 +76,10 @@ def main():
                     text += "skip... (already done)"
                     continue
             
-            result = save_request(combination)
+            result = combine(combination)
+            if not result:
+                continue
+            
             text += result["result"]
             if result["result"] not in current:
                 c.execute(
