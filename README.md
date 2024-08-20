@@ -81,3 +81,7 @@ $ python3 scrape.py
 
 If you do that, it would be appreciated if you could make a pull request so that other people don't have to repopulate the database if you alread did it.
 If you have more problems you can contact me on [discord](https://discord.gg/w5t524meRT).
+
+## Epic Logo
+
+![epic logo](https://i.imgur.com/mZCUxH2.png)
