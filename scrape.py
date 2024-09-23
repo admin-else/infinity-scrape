@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-import requests
-import backoff
-import sqlite3
-import random
+# import asyncio
 import os
-from settings import *
+import random
+import sqlite3
+
+# import aiosqlite
+import backoff
+import requests
+
+import settings as s
 
 if not os.path.exists("infinite-craft.db"):
     print(
@@ -15,7 +19,8 @@ cd path/to/infinite-craft.db
     )
     if (
         not input(
-            "Are you sure you want to start a new database? You can use the one on the github page. [Y/n]"
+            "Are you sure you want to start a new database? "
+            "You can use the one on the github page. [Y/n]"
         )
         .lower()
         .startswith("y")
@@ -30,19 +35,24 @@ c.execute(
              (id INTEGER PRIMARY KEY, ingr1 TEXT, ingr2 TEXT, out TEXT UNIQUE)"""
 )
 
-def are_chars_in_string(chars, string):
-    return bool([1 for c in chars if c in string])
 
-@backoff.on_exception(backoff.expo,
-                      requests.exceptions.RequestException,
-                      max_time=60)
+def are_chars_in_string(chars, string):
+    return bool(1 for c in chars if c in string)
+
+
+@backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_time=60)
 def combine(combination):
     try:
-        response = requests.post('https://neal.fun/api/infinite-craft/pair', params={"first": combination[0], "second": combination[1]}, headers=HEADERS).json()
+        response = requests.get(
+            "https://neal.fun/api/infinite-craft/pair",
+            params={"first": combination[0], "second": combination[1]},
+            headers=s.HEADERS,
+        ).json()
     except Exception as e:
         print("got exeption:", e)
         return
     return response
+
 
 def main():
     newAdditions, firstEvers = 0, 0
@@ -56,30 +66,32 @@ def main():
         current = ["Water", "Fire", "Wind", "Earth"]
     try:
         print("Starting, press CTRL+C or close this window to stop")
-        text = "Done..."
+        print("Done...")
         while api_gives_info:
             combination = [random.choice(current), random.choice(current)]
-            if SIMPLE_COMBINES:
-                if are_chars_in_string(NON_SIMPLE_CHARS, combination[0]) or are_chars_in_string(NON_SIMPLE_CHARS, combination[1]):
+            if s.SIMPLE_COMBINES:
+                if are_chars_in_string(s.NON_SIMPLE_CHARS, combination[0]) or are_chars_in_string(
+                    s.NON_SIMPLE_CHARS, combination[1]
+                ):
                     continue
-                
-            print(text)
+
             text = f"{combination[0]} + {combination[1]} -> "
-            
-            if CHECK_IF_ALREADY_DONE:
+
+            if s.CHECK_IF_ALREADY_DONE:
                 c.execute(
-                    "SELECT * FROM combination WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
+                    "SELECT * FROM combination "
+                    "WHERE (ingr1=? AND ingr2=?) OR (ingr1=? AND ingr2=?)",
                     (combination[0], combination[1], combination[1], combination[0]),
                 )
                 existing_combination = c.fetchone()
                 if existing_combination:
-                    text += "skip... (already done)"
+                    print(text + "skip... (already done)")
                     continue
-            
+
             result = combine(combination)
             if not result:
                 continue
-            
+
             text += result["result"]
             if result["result"] not in current:
                 c.execute(
@@ -94,6 +106,7 @@ def main():
                 if result["isNew"]:
                     firstEvers += 1
                     text += " (FIRST EVER)"
+            print(text)
 
     except KeyboardInterrupt:
         print("Exiting")
@@ -101,9 +114,9 @@ def main():
         print(f"{type(e)}: {e}")
     finally:
         conn.close()
-        
+
     print(f"Found {newAdditions} new combinations and {firstEvers} first ever combinations!")
+
 
 if __name__ == "__main__":
     main()
-
