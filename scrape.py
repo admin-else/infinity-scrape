@@ -3,6 +3,7 @@
 import os
 import random
 import sqlite3
+import time
 
 # import aiosqlite
 import backoff
@@ -67,6 +68,7 @@ def main():
     try:
         print("Starting, press CTRL+C or close this window to stop")
         print("Done...")
+        start_time = time.time()
         while api_gives_info:
             combination = [random.choice(current), random.choice(current)]
             if s.SIMPLE_COMBINES:
@@ -115,7 +117,7 @@ def main():
     finally:
         conn.close()
 
-    print(f"Found {newAdditions} new combinations and {firstEvers} first ever combinations!")
+    print(f"Found {newAdditions} new combinations and {firstEvers} first ever combinations in {time.time()-start_time:.1f}s!")
 
 
 if __name__ == "__main__":
