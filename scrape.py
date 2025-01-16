@@ -7,6 +7,7 @@ import time
 
 # import aiosqlite
 import backoff
+import json
 import requests
 
 import settings as s
@@ -38,17 +39,20 @@ c.execute(
 
 
 def are_chars_in_string(chars, string):
-    return bool(1 for c in chars if c in string)
+    return any(1 for c in chars if c in string)
 
 
-@backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_time=60)
+@backoff.on_exception(backoff.expo, [requests.exceptions.RequestException, json.decoder.JSONDecodeError], max_time=60)
 def combine(combination):
     try:
         response = requests.get(
             "https://neal.fun/api/infinite-craft/pair",
             params={"first": combination[0], "second": combination[1]},
             headers=s.HEADERS,
-        ).json()
+        )
+        if not response.ok:
+            print(f"Bad status code {response.status_code}")
+        response = response.json()
     except Exception as e:
         print("got exeption:", e)
         return
@@ -56,7 +60,7 @@ def combine(combination):
 
 
 def main():
-    newAdditions, firstEvers = 0, 0
+    newAdditions, firstEvers, crafts = 0, 0, 0
     print("Connected!")
     api_gives_info = True
 
@@ -95,6 +99,7 @@ def main():
                 continue
 
             text += result["result"]
+            crafts += 1
             if result["result"] not in current:
                 c.execute(
                     "INSERT INTO combination (ingr1, ingr2, out) VALUES (?, ?, ?)",
