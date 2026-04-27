@@ -16,6 +16,16 @@ conn = sqlite3.connect("infinite-craft.db")
 cursor = conn.cursor()
 
 base = set(["Water", "Fire", "Wind", "Earth"])
+
+if os.path.exists("infinite-craft-items.json"):
+    print("Found infinite-craft-items.json will extend base set to all unlocked elements")
+    import json
+    with open("infinite-craft-items.json") as f:
+        items = json.load(f)
+    base = set([i["text"] for i in items])
+    print(f"Base set extended to {len(base)} elements")
+
+
 # title will make stuff that uses wrong case right like anime -> Anime
 targets = set([input("Enter your desired element: ").title()])
 steps = {}
